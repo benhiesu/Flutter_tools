@@ -1,0 +1,506 @@
+"""Exposes a URL that specifies the behavior of this scalar."""
+directive @specifiedBy(
+  """The URL that specifies the behavior of this scalar."""
+  url: String!
+) on SCALAR
+
+input ChangePasswordInput {
+  password: String!
+  token: String!
+}
+
+type ChangePasswordResponse {
+  errors: [FieldError!]
+  success: String
+}
+
+"""El modelo de Clientes"""
+type Client {
+  id: ID!
+  dni: Float!
+  fullName: String!
+  phoneNumber: [Float!]!
+  email: String
+  address: String!
+  ciudad: String!
+  avatars: String
+  isActive: Boolean!
+  contratos: [ContratoType!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  facturas(search: String, offset: Int = 0, limit: Int = 10, sortBy: SortArgs): [FacturaType!]!
+}
+
+type ClientResponse {
+  info: FieldInfo!
+  clients: [Client!]!
+}
+
+"""Modelo db de decodificador"""
+type Contrato {
+  id: ID!
+  codigo: Float
+  client: Client
+  serviceFees: [ServiceFee!]
+  decoders: [DecoderType!]
+  descripcion: String
+  fechaInicio: Float!
+  fechaFin: Float!
+  diaPago: Float!
+  isActive: Boolean!
+  interestRate: Float!
+  costoInst: Float!
+  saldoAdelanto: Float
+  total: Float
+  createdAt: String!
+  updatedAt: String!
+  facturaCount: Float!
+  facturas(search: String, offset: Int = 0, limit: Int = 10, sortBy: SortArgs): [FacturaType!]!
+}
+
+type ContratoResponse {
+  info: FieldInfo!
+  contrato: [Contrato!]!
+}
+
+type ContratoType {
+  id: ID!
+  codigo: Float
+  descripcion: String
+  fechaInicio: Float!
+  fechaFin: Float!
+  diaPago: Float!
+  isActive: Boolean!
+  interestRate: Float!
+  costoInst: Float!
+  saldoAdelanto: Float
+  total: Float
+  createdAt: String!
+  updatedAt: String!
+}
+
+input CreateClientInput {
+  dni: Float!
+  fullName: String!
+  phoneNumber: [Float!]!
+  email: String
+  address: String!
+  ciudad: String!
+  avatars: String
+  isActive: Boolean
+}
+
+input CreateContratoInput {
+  client: String!
+  serviceFees: [String!]!
+  decoders: [String!]!
+  descripcion: String
+  fechaInicio: Float!
+  fechaFin: Float
+  diaPago: Float!
+  interestRate: Float
+  saldoAdelanto: Float
+  costoInst: Float!
+}
+
+input CreateDecoderInput {
+  casId: Float!
+
+  """Numero de tarjeta, del decodificador"""
+  tarjeta: Float
+  description: String
+  titular: Float!
+}
+
+input CreateFacturaInput {
+  client: String!
+}
+
+input CreateHeadlineInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input CreatePaymentInput {
+  client: ID
+  contrato: ID
+  monto: Float!
+  metodoDePago: PaymentMethod!
+  anulado: Boolean
+  fechaAnulacion: DateTime
+  motivoAnulacion: String
+}
+
+input CreateServiceFeeInput {
+  servicio: String!
+  descripcion: String
+  precio: Float!
+  stock: Float!
+  mora: Float
+}
+
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
+"""Modelo db de decodificador"""
+type Decoder {
+  id: ID!
+  casId: Float!
+  tarjeta: Float
+  description: String
+  titular: HeadlineType
+  contrato: ContratoType
+  isActive: Boolean!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type DecoderResponse {
+  info: FieldInfo!
+  decoder: [Decoder!]!
+}
+
+type DecoderType {
+  id: ID!
+  casId: Float!
+  tarjeta: Float
+  description: String
+  isActive: Boolean!
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""Modelo db de decodificador"""
+type Factura {
+  id: ID!
+  contrato: ContratoType!
+  client: Client!
+  serviceFees: [ServiceFee!]!
+  descripcion: String
+  fechaEmision: Float!
+  fechaVencimiento: Float!
+  montoMensual: Float!
+  mora: Float!
+  subtotal: Float!
+  montoPagado: Float!
+  totalDeuda: Float!
+  deudaPasada: Float!
+  total: Float!
+  saldoPendiente: Float!
+  pagoAdelantado: Float!
+  igv: Float!
+  estadoPago: String!
+  createdAt: Float!
+  updatedAt: Float!
+}
+
+type FacturaResponse {
+  info: FieldInfo!
+  facturas: [Factura!]!
+}
+
+type FacturaType {
+  id: ID!
+  descripcion: String
+  fechaEmision: Float!
+  fechaVencimiento: Float!
+  montoMensual: Float!
+  mora: Float!
+  subtotal: Float!
+  montoPagado: Float!
+  totalDeuda: Float!
+  deudaPasada: Float!
+  total: Float!
+  saldoPendiente: Float!
+  pagoAdelantado: Float!
+  igv: Float!
+  estadoPago: String!
+  createdAt: Float!
+  updatedAt: Float!
+}
+
+type FieldError {
+  field: String!
+  message: String!
+}
+
+type FieldInfo {
+  total: Float!
+  pages: Float
+  totalData: Float
+}
+
+"""Modelo db - titular de decodificador"""
+type Headline {
+  id: ID
+  dni: Float!
+  fullName: String!
+  fNacimiento: String!
+  decoder: [DecoderType!]
+}
+
+type HeadlineResponse {
+  info: FieldInfo!
+  headline: [Headline!]!
+}
+
+type HeadlineType {
+  id: ID
+  dni: Float!
+  fullName: String!
+  fNacimiento: String!
+}
+
+type Lang {
+  id: ID!
+  key: String!
+  value: String!
+  language: String!
+}
+
+type MessageResponse {
+  path: String!
+  message: String!
+  ok: Boolean!
+}
+
+type Mutation {
+  createClient(data: CreateClientInput!): Client
+  updateClient(updateClient: UpdateClientInput!): Client!
+  removeClient(id: String!): String!
+  createContrato(createContratoInput: CreateContratoInput!): Contrato!
+  updateContrato(updateContratoInput: UpdateContratoInput!): Contrato!
+  removeContrato(id: String!): Contrato!
+  createDecoder(data: CreateDecoderInput!): Decoder!
+  updateDecoder(updateData: UpdateDecoderInput!): Decoder!
+  removeDecoder(id: String!): Decoder!
+  createFactura(createFacturaInput: CreateFacturaInput!): Factura!
+  updateFactura(updateFacturaInput: UpdateFacturaInput!): Factura!
+  removeFactura(id: String!): Factura!
+  createHeadline(createHeadlineInput: CreateHeadlineInput!): Headline!
+  updateHeadline(updateHeadlineInput: UpdateHeadlineInput!): Headline!
+  removeHeadline(id: String!): Headline!
+  procesarPago(createPaymentInput: CreatePaymentInput!): Payment!
+  updatePayment(updatePaymentInput: UpdatePaymentInput!): Payment!
+  removePayment(id: Float!): Payment!
+  createServiceFee(createServiceFeeInput: CreateServiceFeeInput!): ServiceFee!
+  updateServiceFee(updateServiceFeeInput: UpdateServiceFeeInput!): ServiceFee!
+  removeServiceFee(id: String!): String!
+  confirmUser(token: String!): UserIsActive
+  login(password: String!, usermail: String!): UserResponse!
+  logout: Boolean!
+  update: Boolean!
+  refreshToken: RefreshResponse!
+  changePassword(data: ChangePasswordInput!): ChangePasswordResponse!
+  forgotPassword(email: String!): MessageResponse!
+  register(data: RegisterInput!): UserResponse!
+}
+
+"""es para ordenar los registros"""
+enum OrderBy {
+  asc
+  desc
+}
+
+"""Modelo db de decodificador"""
+type Payment {
+  id: ID!
+  cliente: Client
+  facturas: [FacturaType!]
+  contrato: ContratoType
+  usuario: User
+  monto: Float!
+  fechaPago: String!
+  metodoDePago: String!
+  anulado: Boolean!
+  fechaAnulacion: DateTime
+  motivoAnulacion: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""es para verificar el metodo de pago"""
+enum PaymentMethod {
+  efectivo
+  deposito
+  otros
+}
+
+type PaymentResponse {
+  info: FieldInfo!
+  payments: [Payment!]!
+}
+
+type Query {
+  Languages: [Lang!]!
+  ping: String!
+  allClients(search: String, offset: Int = 0, limit: Int = 10, sortBy: SortArgs): ClientResponse!
+  oneClient(id: String!): Client!
+  getContratos(search: String, offset: Int = 0, limit: Int = 10, sortBy: SortArgs): ContratoResponse!
+  getContrato(id: String!): Contrato!
+  DetalleContrato(id: String!): Contrato!
+  allDecoders(search: String, offset: Int = 0, limit: Int = 10, sortBy: SortArgs): DecoderResponse!
+  oneDecoder(id: String!): Decoder!
+  allFacturas(search: String, offset: Int = 0, limit: Int = 10, sortBy: SortArgs): FacturaResponse!
+  oneFactura(id: String!): Factura!
+  allHeadline(search: String, offset: Int = 0, limit: Int = 10, sortBy: SortArgs): HeadlineResponse!
+  oneHeadline(id: String!): Headline!
+  allPayments(search: String, offset: Int = 0, limit: Int = 10, sortBy: SortArgs): PaymentResponse!
+  payment(id: Float!): Payment!
+  allServices(search: String, offset: Int = 0, limit: Int = 10, sortBy: SortArgs): ServiceFeeResponse!
+  oneService(id: String!): ServiceFee!
+  me: User
+  meUnverified: User
+  hello(usermail: String!): String!
+}
+
+type RefreshResponse {
+  ok: Boolean!
+  accessToken: String!
+}
+
+input RegisterInput {
+  password: String!
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  roles: [ValidRoles!]
+}
+
+"""El modelo de roles de usuario"""
+type Role {
+  id: ID
+  name: String
+}
+
+"""modelo de tarifa de servicio"""
+type ServiceFee {
+  id: ID!
+  codigo: String
+  servicio: String!
+  descripcion: String
+  precio: Float!
+  stock: Float!
+  mora: Float!
+  isActive: Boolean!
+}
+
+type ServiceFeeResponse {
+  info: FieldInfo!
+  serviceFee: [ServiceFee!]!
+}
+
+input SortArgs {
+  field: String = "createdAt"
+  dir: OrderBy = desc
+}
+
+input UpdateClientInput {
+  dni: Float
+  fullName: String
+  phoneNumber: [Float!]
+  email: String
+  address: String
+  ciudad: String
+  avatars: String
+  isActive: Boolean
+  id: String!
+}
+
+input UpdateContratoInput {
+  client: String
+  serviceFees: [String!]
+  decoders: [String!]
+  descripcion: String
+  fechaInicio: Float
+  fechaFin: Float
+  diaPago: Float
+  interestRate: Float
+  saldoAdelanto: Float
+  costoInst: Float
+  id: String!
+}
+
+input UpdateDecoderInput {
+  casId: Float
+
+  """Numero de tarjeta, del decodificador"""
+  tarjeta: Float
+  description: String
+  titular: Float
+  id: String!
+}
+
+input UpdateFacturaInput {
+  client: String
+  id: Int!
+}
+
+input UpdateHeadlineInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: String!
+}
+
+input UpdatePaymentInput {
+  client: ID
+  contrato: ID
+  monto: Float
+  metodoDePago: PaymentMethod
+  anulado: Boolean
+  fechaAnulacion: DateTime
+  motivoAnulacion: String
+  id: Int!
+}
+
+input UpdateServiceFeeInput {
+  servicio: String
+  descripcion: String
+  precio: Float
+  stock: Float
+  mora: Float
+  id: String!
+}
+
+"""El modelo de usuario"""
+type User {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  phoneNumber: String
+  age: Float
+  email: String!
+  username: String!
+  status: Boolean!
+  tokenSuspend: Boolean!
+  avatars: String
+  roles: [Role!]!
+  createdAt: String!
+  updatedAt: String!
+  fullName: String!
+}
+
+type UserIsActive {
+  message: String
+  ok: Boolean!
+}
+
+type UserResponse {
+  errors: FieldError
+  user: User
+  accessToken: String
+  refreshToken: String
+}
+
+"""
+Ullamco labore ut ut adipisicing commodo sit elit ullamco eiusmod ut mollit sint.
+"""
+enum ValidRoles {
+  user
+  admin
+  moderator
+}
+

@@ -1,0 +1,43 @@
+query Me {
+  me {
+    id
+    firstName
+    lastName
+    phoneNumber
+    age
+    email
+    username
+    status
+    tokenSuspend
+    avatars
+    roles {
+      id
+      name
+    }
+    createdAt
+    updatedAt
+    fullName
+  }
+}
+
+query MeUnverified {
+  meUnverified {
+    id
+    firstName
+    lastName
+    phoneNumber
+    age
+    email
+    username
+    status
+    tokenSuspend
+    avatars
+    roles {
+      id
+      name
+    }
+    createdAt
+    updatedAt
+    fullName
+  }
+}
